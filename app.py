@@ -76,34 +76,18 @@ if uploaded_file:
         subtitle.text_frame.paragraphs[0].font.name = "Segoe UI"
         subtitle.text_frame.paragraphs[0].font.size = Pt(20)
         subtitle.text_frame.paragraphs[0].font.italic = True
-        new_ppt = Presentation()
-        new_ppt.slide_width = Inches(13.33)
-        new_ppt.slide_height = Inches(7.5)  # 16:9 aspect ratio
+
         layout = new_ppt.slide_layouts[1]
 
         for row in preview_data:
             i = row["Slide Number"]
             old_slide = old_ppt.slides[i - 1]
-            new_slide = new_ppt.slides.add_slide(layout)
-            slide_list = [new_slide]
-            if split_required:
-                slide2 = new_ppt.slides.add_slide(layout)
-                slide2.shapes.title.text = new_slide.shapes.title.text + " (contd)"
-                indicator_box = slide2.shapes.add_textbox(Inches(0.5), Inches(0.2), Inches(6), Inches(0.3))
-                indicator_tf = indicator_box.text_frame
-                indicator_tf.text = "🔁 Continued from previous slide"
-                indicator_tf.paragraphs[0].font.size = Pt(14)
-                indicator_tf.paragraphs[0].font.color.rgb = RGBColor(90, 90, 90)
-                part2_box = slide2.placeholders[1].text_frame
-                part2_box.clear()
-                for line in parts[1]:
-                    para = part2_box.add_paragraph()
-                    para.text = line
-                    para.font.size = Pt(18)
-                    para.font.name = "Segoe UI"
-                    para.font.color.rgb = RGBColor(0, 0, 0)
-                slide_list.append(slide2)
+            content_text = [shape.text.strip() for shape in old_slide.shapes if shape.has_text_frame and shape.text.strip()]
+            split_required = len(content_text) > 5
+            parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
 
+            # Slide 1
+            new_slide = new_ppt.slides.add_slide(layout)
             try:
                 old_title = old_slide.shapes.title.text.strip()
                 new_slide.shapes.title.text = old_title
@@ -115,10 +99,6 @@ if uploaded_file:
             except:
                 new_slide.shapes.title.text = f"Slide {i}"
 
-            content_text = [shape.text.strip() for shape in old_slide.shapes if shape.has_text_frame and shape.text.strip()]
-            # Split long content into two slides if needed
-            split_required = len(content_text) > 5
-            parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
             content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
             for line in parts[0]:
@@ -134,7 +114,10 @@ if uploaded_file:
 Font: {row['Font']}
 Color Theme: {row['Color']}
 Visual: {row['Visual']}
-Prompt: Design a slide using layout: {row['Layout']}, color: {row['Color']}, with {row['Visual']}. Use Apollo University branding."
+Prompt: {row['Prompt']}"
+
+            notes_slide = new_slide.notes_slide
+            notes_slide.notes_text_frame.text = row['Prompt']
 
             footer = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.8), Inches(9), Inches(0.3))
             footer_tf = footer.text_frame
@@ -153,20 +136,46 @@ Prompt: Design a slide using layout: {row['Layout']}, color: {row['Color']}, wit
             except:
                 pass
 
-            
-            # Add AI prompt to speaker notes
-            notes_slide = new_slide.notes_slide
-            notes_slide.notes_text_frame.text = row['Prompt']
-
             fill = new_slide.background.fill
             fill.solid()
             fill.fore_color.rgb = RGBColor(210, 230, 255)
+
+            # Optional Split Slide
+            if split_required:
+                slide2 = new_ppt.slides.add_slide(layout)
+                slide2.shapes.title.text = new_slide.shapes.title.text + " (contd)"
+
+                indicator_box = slide2.shapes.add_textbox(Inches(0.5), Inches(0.2), Inches(6), Inches(0.3))
+                indicator_tf = indicator_box.text_frame
+                indicator_tf.text = "🔁 Continued from previous slide"
+                indicator_tf.paragraphs[0].font.size = Pt(14)
+                indicator_tf.paragraphs[0].font.color.rgb = RGBColor(90, 90, 90)
+
+                part2_box = slide2.placeholders[1].text_frame
+                part2_box.clear()
+                for line in parts[1]:
+                    para = part2_box.add_paragraph()
+                    para.text = line
+                    para.font.size = Pt(18)
+                    para.font.name = "Segoe UI"
+                    para.font.color.rgb = RGBColor(0, 0, 0)
+
+                slide2.notes_slide.notes_text_frame.text = row['Prompt']
+
+                fill = slide2.background.fill
+                fill.solid()
+                fill.fore_color.rgb = RGBColor(210, 230, 255)
 
         ppt_io = io.BytesIO()
         new_ppt.save(ppt_io)
         ppt_io.seek(0)
 
         st.download_button(
+            label="📥 Download Enhanced Apollo PPT",
+            data=ppt_io,
+            file_name="Apollo_AI_Enhanced_Slides.pptx",
+            mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        )
             label="📥 Download Enhanced Apollo PPT",
             data=ppt_io,
             file_name="Apollo_AI_Enhanced_Slides.pptx",
