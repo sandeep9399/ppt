@@ -38,7 +38,9 @@ if uploaded_file:
     for i, slide in enumerate(old_ppt.slides, start=1):
         text = " ".join([shape.text.strip() for shape in slide.shapes if shape.has_text_frame and shape.text.strip()])
         suggestion = suggest_design_elements(text)
+                prompt = f"Design a slide using layout: {suggestion['Layout']}, color: {suggestion['Color']}, with {suggestion['Visual']}. Use Apollo University branding."
         preview_data.append({
+            "Prompt": prompt,
             "Slide Number": i,
             "Content Preview": text[:80] + ("..." if len(text) > 80 else ""),
             "Layout": suggestion["Layout"],
@@ -51,8 +53,22 @@ if uploaded_file:
     st.markdown("### 🧠 AI Suggestions Preview")
     st.dataframe(df, use_container_width=True)
 
+    st.markdown("### 🔍 Detailed AI Suggestions")
+    for row in preview_data:
+        st.markdown(f"**Slide {row['Slide Number']}**")
+        st.markdown(f"• **Content**: {row['Content Preview']}")
+        st.markdown(f"• **Suggested Layout**: {row['Layout']}")
+        st.markdown(f"• **Font**: {row['Font']}")
+        st.markdown(f"• **Color Theme**: {row['Color']}")
+        st.markdown(f"• **Visual Element**: {row['Visual']}")
+                st.markdown(f"• **AI Prompt**: {row['Prompt']}")
+        st.markdown("---")
+
     if st.button("✨ Generate Enhanced Apollo Slides"):
-        # Add branded title slide
+        new_ppt = Presentation()
+        new_ppt.slide_width = Inches(13.33)
+        new_ppt.slide_height = Inches(7.5)
+
         title_slide = new_ppt.slides.add_slide(new_ppt.slide_layouts[0])
         title_slide.shapes.title.text = "Apollo University"
         subtitle = title_slide.placeholders[1]
@@ -69,6 +85,24 @@ if uploaded_file:
             i = row["Slide Number"]
             old_slide = old_ppt.slides[i - 1]
             new_slide = new_ppt.slides.add_slide(layout)
+            slide_list = [new_slide]
+            if split_required:
+                slide2 = new_ppt.slides.add_slide(layout)
+                slide2.shapes.title.text = new_slide.shapes.title.text + " (contd)"
+                indicator_box = slide2.shapes.add_textbox(Inches(0.5), Inches(0.2), Inches(6), Inches(0.3))
+                indicator_tf = indicator_box.text_frame
+                indicator_tf.text = "🔁 Continued from previous slide"
+                indicator_tf.paragraphs[0].font.size = Pt(14)
+                indicator_tf.paragraphs[0].font.color.rgb = RGBColor(90, 90, 90)
+                part2_box = slide2.placeholders[1].text_frame
+                part2_box.clear()
+                for line in parts[1]:
+                    para = part2_box.add_paragraph()
+                    para.text = line
+                    para.font.size = Pt(18)
+                    para.font.name = "Segoe UI"
+                    para.font.color.rgb = RGBColor(0, 0, 0)
+                slide_list.append(slide2)
 
             try:
                 old_title = old_slide.shapes.title.text.strip()
@@ -82,9 +116,12 @@ if uploaded_file:
                 new_slide.shapes.title.text = f"Slide {i}"
 
             content_text = [shape.text.strip() for shape in old_slide.shapes if shape.has_text_frame and shape.text.strip()]
+            # Split long content into two slides if needed
+            split_required = len(content_text) > 5
+            parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
             content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
-            for line in content_text:
+            for line in parts[0]:
                 para = content_box.add_paragraph()
                 para.text = line
                 para.font.size = Pt(18)
@@ -93,7 +130,11 @@ if uploaded_file:
 
             layout_box = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.0), Inches(5.5), Inches(0.6))
             layout_tf = layout_box.text_frame
-            layout_tf.text = f"AI Layout: {row['Layout']} | Visual: {row['Visual']}"
+            layout_tf.text = f"AI Layout: {row['Layout']}
+Font: {row['Font']}
+Color Theme: {row['Color']}
+Visual: {row['Visual']}
+Prompt: Design a slide using layout: {row['Layout']}, color: {row['Color']}, with {row['Visual']}. Use Apollo University branding."
 
             footer = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.8), Inches(9), Inches(0.3))
             footer_tf = footer.text_frame
@@ -111,6 +152,11 @@ if uploaded_file:
                     new_slide.shapes.add_picture(img_data, Inches(8.2), Inches(6.7), width=Inches(1))
             except:
                 pass
+
+            
+            # Add AI prompt to speaker notes
+            notes_slide = new_slide.notes_slide
+            notes_slide.notes_text_frame.text = row['Prompt']
 
             fill = new_slide.background.fill
             fill.solid()
