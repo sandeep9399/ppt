@@ -38,7 +38,7 @@ if uploaded_file:
     for i, slide in enumerate(old_ppt.slides, start=1):
         text = " ".join([shape.text.strip() for shape in slide.shapes if shape.has_text_frame and shape.text.strip()])
         suggestion = suggest_design_elements(text)
-                        prompt = f"Design a slide using layout: {suggestion['Layout']}, color: {suggestion['Color']}, with {suggestion['Visual']}. Use Apollo University branding."
+        prompt = f"Design a slide using layout: {suggestion['Layout']}, color: {suggestion['Color']}, with {suggestion['Visual']}. Use Apollo University branding."
         preview_data.append({
             "Prompt": prompt,
             "Slide Number": i,
@@ -61,7 +61,7 @@ if uploaded_file:
         st.markdown(f"• **Font**: {row['Font']}")
         st.markdown(f"• **Color Theme**: {row['Color']}")
         st.markdown(f"• **Visual Element**: {row['Visual']}")
-                        st.markdown(f"• **AI Prompt**: {row['Prompt']}")
+                                st.markdown(f"• **AI Prompt**: {row['Prompt']}")
         st.markdown("---")
 
     if st.button("✨ Generate Enhanced Apollo Slides"):
