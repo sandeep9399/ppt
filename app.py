@@ -1,4 +1,4 @@
-# Apollo PPT Auto Enhancer with Suggestions Preview
+# Apollo PPT Enhancer with AI Suggestions
 
 import streamlit as st
 import pandas as pd
@@ -12,14 +12,13 @@ st.set_page_config(page_title="Apollo PPT Enhancer", layout="wide")
 st.title("🚀 Apollo Slide Enhancer")
 
 st.markdown("""
-Upload your **old PowerPoint (.pptx)** file. Step 1 will show design suggestions slide-by-slide.
-Click the button to generate a new `.pptx` with Apollo styling + incorporated enhancements.
+Upload your **old PowerPoint (.pptx)** file. You'll see AI-powered layout and design suggestions first.
+Then, click the button to generate a professionally enhanced Apollo-branded presentation.
 """)
 
 uploaded_file = st.file_uploader("Upload old-format PPT", type=["pptx"])
 apollo_logo_url = "https://upload.wikimedia.org/wikipedia/en/1/1e/Apollo_Hospitals_Logo.png"
 
-# AI layout suggestion logic
 def suggest_design_elements(text):
     text = text.lower()
     if "who" in text:
@@ -29,7 +28,7 @@ def suggest_design_elements(text):
     elif "india" in text:
         return {"Layout": "Map overlay", "Font": "Segoe UI", "Color": "Warm tones", "Visual": "India map infographic"}
     else:
-        return {"Layout": "Standard", "Font": "Segoe UI", "Color": "Light blue", "Visual": "Photo + icon"}
+        return {"Layout": "Standard", "Font": "Segoe UI", "Color": "Apollo theme", "Visual": "Photo + icon"}
 
 if uploaded_file:
     old_ppt = Presentation(uploaded_file)
@@ -40,30 +39,31 @@ if uploaded_file:
         suggestion = suggest_design_elements(text)
         prompt = f"Design a slide using layout: {suggestion['Layout']}, color: {suggestion['Color']}, with {suggestion['Visual']}. Use Apollo University branding."
         preview_data.append({
-            "Prompt": prompt,
             "Slide Number": i,
             "Content Preview": text[:80] + ("..." if len(text) > 80 else ""),
             "Layout": suggestion["Layout"],
             "Font": suggestion["Font"],
             "Color": suggestion["Color"],
-            "Visual": suggestion["Visual"]
+            "Visual": suggestion["Visual"],
+            "Prompt": prompt
         })
 
     df = pd.DataFrame(preview_data)
-    st.markdown("### 🧠 AI Suggestions Preview")
+    st.markdown("## Step 1: AI Suggestions Table")
     st.dataframe(df, use_container_width=True)
 
-    st.markdown("### 🔍 Detailed AI Suggestions")
+    st.markdown("## 🔍 Detailed Slide-by-Slide Suggestions")
     for row in preview_data:
         st.markdown(f"**Slide {row['Slide Number']}**")
-        st.markdown(f"• **Content**: {row['Content Preview']}")
-        st.markdown(f"• **Suggested Layout**: {row['Layout']}")
+        st.markdown(f"• **Content Preview**: {row['Content Preview']}")
+        st.markdown(f"• **Layout**: {row['Layout']}")
         st.markdown(f"• **Font**: {row['Font']}")
         st.markdown(f"• **Color Theme**: {row['Color']}")
-        st.markdown(f"• **Visual Element**: {row['Visual']}")        st.markdown(f"• **AI Prompt**: {row['Prompt']}")
+        st.markdown(f"• **Visual Suggestion**: {row['Visual']}")
+        st.markdown(f"• **Prompt**: {row['Prompt']}")
         st.markdown("---")
 
-    if st.button("✨ Generate Enhanced Apollo Slides"):
+    if st.button("✨ Step 2: Generate Enhanced Apollo Slides"):
         new_ppt = Presentation()
         new_ppt.slide_width = Inches(13.33)
         new_ppt.slide_height = Inches(7.5)
@@ -85,7 +85,6 @@ if uploaded_file:
             split_required = len(content_text) > 5
             parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
 
-            # Slide 1
             new_slide = new_ppt.slides.add_slide(layout)
             try:
                 old_title = old_slide.shapes.title.text.strip()
@@ -107,12 +106,9 @@ if uploaded_file:
                 para.font.name = "Segoe UI"
                 para.font.color.rgb = RGBColor(0, 0, 0)
 
-            layout_box = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.0), Inches(5.5), Inches(0.6))
+            layout_box = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.0), Inches(5.5), Inches(0.7))
             layout_tf = layout_box.text_frame
-            layout_tf.text = f"AI Layout: {row['Layout']}
-Font: {row['Font']}
-Color Theme: {row['Color']}
-Visual: {row['Visual']}
+            layout_tf.text = f"Layout: {row['Layout']} | Visual: {row['Visual']}
 Prompt: {row['Prompt']}"
 
             notes_slide = new_slide.notes_slide
@@ -135,21 +131,14 @@ Prompt: {row['Prompt']}"
             except:
                 pass
 
-            fill = new_slide.background.fill
-            fill.solid()
-            fill.fore_color.rgb = RGBColor(210, 230, 255)
-
-            # Optional Split Slide
             if split_required:
                 slide2 = new_ppt.slides.add_slide(layout)
                 slide2.shapes.title.text = new_slide.shapes.title.text + " (contd)"
-
                 indicator_box = slide2.shapes.add_textbox(Inches(0.5), Inches(0.2), Inches(6), Inches(0.3))
                 indicator_tf = indicator_box.text_frame
                 indicator_tf.text = "🔁 Continued from previous slide"
                 indicator_tf.paragraphs[0].font.size = Pt(14)
                 indicator_tf.paragraphs[0].font.color.rgb = RGBColor(90, 90, 90)
-
                 part2_box = slide2.placeholders[1].text_frame
                 part2_box.clear()
                 for line in parts[1]:
@@ -158,23 +147,12 @@ Prompt: {row['Prompt']}"
                     para.font.size = Pt(18)
                     para.font.name = "Segoe UI"
                     para.font.color.rgb = RGBColor(0, 0, 0)
-
                 slide2.notes_slide.notes_text_frame.text = row['Prompt']
-
-                fill = slide2.background.fill
-                fill.solid()
-                fill.fore_color.rgb = RGBColor(210, 230, 255)
 
         ppt_io = io.BytesIO()
         new_ppt.save(ppt_io)
         ppt_io.seek(0)
-
         st.download_button(
-        label="📥 Download Enhanced Apollo PPT",
-        data=ppt_io,
-        file_name="Apollo_AI_Enhanced_Slides.pptx",
-        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
             label="📥 Download Enhanced Apollo PPT",
             data=ppt_io,
             file_name="Apollo_AI_Enhanced_Slides.pptx",
