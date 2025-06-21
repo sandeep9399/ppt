@@ -134,15 +134,16 @@ Use a 2x2 layout with icons:
 - 🧘‍♂️ for Spiritual (lotus or meditation icon)
 Use Apollo theme colors in quadrant blocks.'''
             elif row['Layout'].startswith("Two-column"):
-                content_box.text = "🗒️ Left: WHO Quote
-\"Health is a state of complete physical, mental...\" — WHO
-📸 Right: Add image of international healthcare team in clinical discussion or data review, wearing lab coats or PPE. Request image using prompt in speaker notes."
+                content_box.text = '''🗒️ Left: WHO Quote
+"Health is a state of complete physical, mental..." — WHO
+📸 Right: Add image of international healthcare team in clinical discussion or data review, wearing lab coats or PPE.
+Request image using prompt in speaker notes.'''
             elif row['Layout'].startswith("India map"):
-                content_box.text = "🗺️ Insert map of India
+                content_box.text = '''🗺️ Insert map of India
 - Overlay hotspots for NCD rates per region
 - Use icons for diabetes, cancer, heart, etc.
 - Include callouts with % stats
-📝 Prompt for AI Image: India health map with disease icons and shaded regions in Apollo colors"
+📝 Prompt for AI Image: India health map with disease icons and shaded regions in Apollo colors'''
             else:
                 for line in parts[0]:
                 para = content_box.add_paragraph()
