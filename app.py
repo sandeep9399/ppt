@@ -166,9 +166,11 @@ Prompt: {row['Prompt']}'''
             footer_para.font.color.rgb = RGBColor(100, 100, 100)
 
             # image placeholder only; OpenAI call removed
-    placeholder_box = new_slide.shapes.add_textbox(Inches(6.0), Inches(1.8), Inches(3.0), Inches(1.5))
-    ph_tf = placeholder_box.text_frame
-    ph_tf.text = f'''[AI image placeholder]
+            placeholder_box = new_slide.shapes.add_textbox(Inches(6.0), Inches(1.8), Inches(3.0), Inches(1.5))
+            ph_tf = placeholder_box.text_frame
+            ph_tf.text = f'''[AI image placeholder]
+Prompt:
+{row['Prompt']}'''
 Prompt:
 {row['Prompt']}'''
 
