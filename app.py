@@ -100,7 +100,8 @@ if uploaded_file:
         subtitle.text_frame.paragraphs[0].font.size = Pt(20)
         subtitle.text_frame.paragraphs[0].font.italic = True
 
-        layout = new_ppt.slide_layouts[1]
+        # use original slide layout to preserve theme
+        layout = old_slide.slide_layout
 
         for row in preview_data:
             i = row["Slide Number"]
@@ -110,8 +111,11 @@ if uploaded_file:
             parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
 
             new_slide = new_ppt.slides.add_slide(layout)
-            content_box = new_slide.placeholders[1].text_frame
+            try:
+                content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
+        except:
+                content_box = new_slide.shapes.add_textbox(Inches(1), Inches(1.5), Inches(7.5), Inches(4)).text_frame
             if row['Layout'].startswith("4-quadrant"):
                 content_box.text = '''🧠 Physical | ❤️ Mental
 👥 Social  | 🧘‍♂️ Spiritual
@@ -135,7 +139,7 @@ Request image using prompt in speaker notes.'''
 📝 Prompt for AI Image: India health map with disease icons and shaded regions in Apollo colors'''
             else:
                 for line in parts[0]:
-                    para = content_box.add_paragraph()
+                para = content_box.add_paragraph()
                 para.text = line
                 para.font.size = Pt(18)
                 para.font.name = "Segoe UI"
