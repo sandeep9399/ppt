@@ -164,10 +164,13 @@ Request image using prompt in speaker notes.'''
 - Visual: {row['Visual']}
 - Prompt: {row['Prompt']}'''
 
-            # Add all of it to speaker notes too
-                            f"Layout: {row['Layout']} | Visual: {row['Visual']}\n"
-                f"Prompt: {row['Prompt']}"
-            )
+            notes_slide = new_slide.notes_slide
+            notes_slide.notes_text_frame.text = f'''Full Slide Suggestion:
+Layout: {row['Layout']}
+Font: {row['Font']}
+Color Theme: {row['Color']}
+Visual: {row['Visual']}
+Prompt: {row['Prompt']}'''
 
             notes_slide = new_slide.notes_slide
             notes_slide.notes_text_frame.text = (
