@@ -2,3 +2,4 @@ streamlit
 pandas
 python-pptx
 requests
+openai
