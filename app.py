@@ -124,15 +124,15 @@ if uploaded_file:
             content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
             if row['Layout'].startswith("4-quadrant"):
-                content_box.text = "🧠 Physical | ❤️ Mental
+                content_box.text = '''🧠 Physical | ❤️ Mental
 👥 Social  | 🧘‍♂️ Spiritual
 
-[Use a 2x2 layout with icons:
+Use a 2x2 layout with icons:
 - 🧠 for Physical (dumbbell)
 - ❤️ for Mental (brain)
 - 👥 for Social (community/people)
 - 🧘‍♂️ for Spiritual (lotus or meditation icon)
-Use Apollo theme colors in quadrant blocks.]"
+Use Apollo theme colors in quadrant blocks.'''
             elif row['Layout'].startswith("Two-column"):
                 content_box.text = "🗒️ Left: WHO Quote
 \"Health is a state of complete physical, mental...\" — WHO
