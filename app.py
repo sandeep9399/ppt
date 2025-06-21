@@ -123,6 +123,14 @@ if uploaded_file:
 
             content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
+            for line in parts[0]:
+                para = content_box.add_paragraph()
+                para.text = line
+                para.font.size = Pt(18)
+                para.font.name = "Segoe UI"
+                para.font.color.rgb = RGBColor(0, 0, 0)
+
+
             if row['Layout'].startswith("4-quadrant"):
                 content_box.text = '''🧠 Physical | ❤️ Mental
 👥 Social  | 🧘‍♂️ Spiritual
@@ -157,12 +165,8 @@ Request image using prompt in speaker notes.'''
             layout_tf.clear()
             layout_tf.word_wrap = True
             layout_tf.margin_bottom = Inches(0.1)
-            layout_tf.text = f'''Slide Suggestion:
-- Layout: {row['Layout']}
-- Font: {row['Font']}
-- Color: {row['Color']}
-- Visual: {row['Visual']}
-- Prompt: {row['Prompt']}'''
+            layout_tf.text = """AI Prompt:
+{row['Prompt']}"""
 
             notes_slide = new_slide.notes_slide
             notes_slide.notes_text_frame.text = f'''Full Slide Suggestion:
