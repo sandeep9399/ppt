@@ -172,20 +172,7 @@ Color Theme: {row['Color']}
 Visual: {row['Visual']}
 Prompt: {row['Prompt']}'''
 
-            notes_slide = new_slide.notes_slide
-            notes_slide.notes_text_frame.text = (
-                f"Full Slide Suggestion
-"
-                f"Layout: {row['Layout']}
-"
-                f"Font: {row['Font']}
-"
-                f"Color Theme: {row['Color']}
-"
-                f"Visual: {row['Visual']}
-"
-                f"Prompt: {row['Prompt']}"
-            )
+            
 
             footer = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.8), Inches(9), Inches(0.3))
             footer_tf = footer.text_frame
