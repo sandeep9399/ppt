@@ -171,8 +171,6 @@ Prompt: {row['Prompt']}'''
     ph_tf.text = f'''[AI image placeholder]
 Prompt:
 {row['Prompt']}'''
-Prompt:
-{row['Prompt']}'''
 
             if split_required:
                 slide2 = new_ppt.slides.add_slide(layout)
