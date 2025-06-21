@@ -1,4 +1,4 @@
-# Apollo PPT Enhancer with AI Suggestions
+# Final Apollo PPT Enhancer (Corrected)
 
 import streamlit as st
 import pandas as pd
@@ -108,8 +108,10 @@ if uploaded_file:
 
             layout_box = new_slide.shapes.add_textbox(Inches(0.5), Inches(6.0), Inches(5.5), Inches(0.7))
             layout_tf = layout_box.text_frame
-            layout_tf.text = f"Layout: {row['Layout']} | Visual: {row['Visual']}
-Prompt: {row['Prompt']}"
+            layout_tf.text = (
+                f"Layout: {row['Layout']} | Visual: {row['Visual']}\n"
+                f"Prompt: {row['Prompt']}"
+            )
 
             notes_slide = new_slide.notes_slide
             notes_slide.notes_text_frame.text = row['Prompt']
@@ -152,6 +154,7 @@ Prompt: {row['Prompt']}"
         ppt_io = io.BytesIO()
         new_ppt.save(ppt_io)
         ppt_io.seek(0)
+
         st.download_button(
             label="📥 Download Enhanced Apollo PPT",
             data=ppt_io,
