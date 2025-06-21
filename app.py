@@ -60,8 +60,7 @@ if uploaded_file:
         st.markdown(f"• **Suggested Layout**: {row['Layout']}")
         st.markdown(f"• **Font**: {row['Font']}")
         st.markdown(f"• **Color Theme**: {row['Color']}")
-        st.markdown(f"• **Visual Element**: {row['Visual']}")
-                                st.markdown(f"• **AI Prompt**: {row['Prompt']}")
+        st.markdown(f"• **Visual Element**: {row['Visual']}")        st.markdown(f"• **AI Prompt**: {row['Prompt']}")
         st.markdown("---")
 
     if st.button("✨ Generate Enhanced Apollo Slides"):
@@ -171,9 +170,13 @@ Prompt: {row['Prompt']}"
         ppt_io.seek(0)
 
         st.download_button(
+        label="📥 Download Enhanced Apollo PPT",
+        data=ppt_io,
+        file_name="Apollo_AI_Enhanced_Slides.pptx",
+        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
             label="📥 Download Enhanced Apollo PPT",
             data=ppt_io,
             file_name="Apollo_AI_Enhanced_Slides.pptx",
             mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
         )
-            
