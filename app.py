@@ -157,24 +157,15 @@ Request image using prompt in speaker notes.'''
             layout_tf.clear()
             layout_tf.word_wrap = True
             layout_tf.margin_bottom = Inches(0.1)
-            layout_tf.text = f"""Slide Suggestion:
+            layout_tf.text = f'''Slide Suggestion:
 - Layout: {row['Layout']}
 - Font: {row['Font']}
 - Color: {row['Color']}
 - Visual: {row['Visual']}
-- Prompt: {row['Prompt']}"""
+- Prompt: {row['Prompt']}'''
 
             # Add all of it to speaker notes too
-            notes_slide = new_slide.notes_slide
-            notes_slide.notes_text_frame.text = f"""Full Slide Suggestion:
-Layout: {row['Layout']}
-Font: {row['Font']}
-Color Theme: {row['Color']}
-Visual: {row['Visual']}
-Prompt: {row['Prompt']}"""
-
-
-                f"Layout: {row['Layout']} | Visual: {row['Visual']}\n"
+                            f"Layout: {row['Layout']} | Visual: {row['Visual']}\n"
                 f"Prompt: {row['Prompt']}"
             )
 
@@ -215,9 +206,9 @@ Prompt: {row['Prompt']}"""
             except:
                 placeholder_box = new_slide.shapes.add_textbox(Inches(6.0), Inches(1.8), Inches(3.0), Inches(1.5))
                 ph_tf = placeholder_box.text_frame
-                ph_tf.text = "[AI image placeholder]
+                ph_tf.text = f'''[AI image placeholder]
 Prompt:
-" + row['Prompt']
+{row['Prompt']}'''
 
             if split_required:
                 slide2 = new_ppt.slides.add_slide(layout)
