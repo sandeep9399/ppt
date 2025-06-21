@@ -146,7 +146,7 @@ Request image using prompt in speaker notes.'''
 📝 Prompt for AI Image: India health map with disease icons and shaded regions in Apollo colors'''
             else:
                 for line in parts[0]:
-                para = content_box.add_paragraph()
+                    para = content_box.add_paragraph()
                 para.text = line
                 para.font.size = Pt(18)
                 para.font.name = "Segoe UI"
