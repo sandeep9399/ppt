@@ -176,8 +176,4 @@ Prompt: {row['Prompt']}"
             file_name="Apollo_AI_Enhanced_Slides.pptx",
             mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
         )
-            label="📥 Download Enhanced Apollo PPT",
-            data=ppt_io,
-            file_name="Apollo_AI_Enhanced_Slides.pptx",
-            mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-        )
+            
