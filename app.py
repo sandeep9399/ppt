@@ -110,7 +110,8 @@ if uploaded_file:
             parts = [content_text[:len(content_text)//2], content_text[len(content_text)//2:]] if split_required else [content_text]
 
             new_slide = new_ppt.slides.add_slide(layout)
-            
+            content_box = new_slide.placeholders[1].text_frame
+            content_box.clear()
             if row['Layout'].startswith("4-quadrant"):
                 content_box.text = '''🧠 Physical | ❤️ Mental
 👥 Social  | 🧘‍♂️ Spiritual
