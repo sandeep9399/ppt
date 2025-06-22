@@ -113,6 +113,42 @@ if uploaded_file:
             new_slide = new_ppt.slides.add_slide(layout)
             try:
                 content_box = new_slide.placeholders[1].text_frame
+                content_box.clear()
+            except:
+                content_box = new_slide.shapes.add_textbox(Inches(1), Inches(1.5), Inches(7.5), Inches(4)).text_frame
+
+            if row['Layout'].startswith("4-quadrant"):
+                content_box.text = '''🧠 Physical | ❤️ Mental
+👥 Social  | 🧘‍♂️ Spiritual
+
+Use a 2x2 layout with icons:
+- 🧠 for Physical (dumbbell)
+- ❤️ for Mental (brain)
+- 👥 for Social (community/people)
+- 🧘‍♂️ for Spiritual (lotus or meditation icon)
+Use Apollo theme colors in quadrant blocks.'''
+            elif row['Layout'].startswith("Two-column"):
+                content_box.text = '''🗒️ Left: WHO Quote
+"Health is a state of complete physical, mental..." — WHO
+📸 Right: Add image of international healthcare team in clinical discussion or data review, wearing lab coats or PPE.
+Request image using prompt in speaker notes.'''
+            elif row['Layout'].startswith("India map"):
+                content_box.text = '''🗺️ Insert map of India
+- Overlay hotspots for NCD rates per region
+- Use icons for diabetes, cancer, heart, etc.
+- Include callouts with % stats
+📝 Prompt for AI Image: India health map with disease icons and shaded regions in Apollo colors'''
+            else:
+                for line in parts[0]:
+                    para = content_box.add_paragraph()
+                    para.text = line
+                    para.font.size = Pt(18)
+                    para.font.name = "Segoe UI"
+                    para.font.color.rgb = RGBColor(0, 0, 0)
+
+
+            try:
+                content_box = new_slide.placeholders[1].text_frame
             content_box.clear()
         except:
                 content_box = new_slide.shapes.add_textbox(Inches(1), Inches(1.5), Inches(7.5), Inches(4)).text_frame
@@ -148,7 +184,7 @@ Request image using prompt in speaker notes.'''
             
 
             
-            # Add entrance animation placeholder (note: python-pptx doesn't support native animations)
+             (note: python-pptx doesn't support native animations)
             animation_note = new_slide.notes_slide.notes_text_frame.add_paragraph()
             animation_note.text = "Suggested Animation: Appear (on click) for each bullet point or image"
             notes_slide = new_slide.notes_slide
